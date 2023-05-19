@@ -10,6 +10,7 @@ class SharedPreferences @Inject constructor(
     @ApplicationContext context: Context
 ) {
     companion object {
+        const val DARK_MODE = "dark_mode"
         const val ID = "id"
         const val PHONE_NUMBER = "phone_number"
         const val NAME = "name"
@@ -44,6 +45,10 @@ class SharedPreferences @Inject constructor(
         return getBoolean(IS_LOGGED_IN)
     }
 
+    fun isDarkMode(): Boolean {
+        return getBoolean(DARK_MODE)
+    }
+
     fun setId(id: Int) {
         saveInt(ID, id)
     }
@@ -72,7 +77,9 @@ class SharedPreferences @Inject constructor(
         saveBoolean(IS_LOGGED_IN, false)
     }
 
-
+    fun setDarkMode(darkMode: Boolean) {
+        saveBoolean(DARK_MODE, darkMode)
+    }
 
     private fun saveString(key: String, value: String) {
         editor.putString(key, value).apply()

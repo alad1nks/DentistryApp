@@ -20,5 +20,22 @@ class ProfileViewModel @Inject constructor(
     private val _jwt: MutableLiveData<String> = MutableLiveData(sharedPreferences.getJwt())
     val jwt: LiveData<String> get() = _jwt
 
+    private val _darkMode: MutableLiveData<Boolean> = MutableLiveData(sharedPreferences.isDarkMode())
+    val darkMode: LiveData<Boolean> get() = _darkMode
+
+    fun getInfo() {
+        _name.postValue(sharedPreferences.getName())
+        _surname.postValue(sharedPreferences.getSurname())
+        _phoneNumber.postValue(sharedPreferences.getPhoneNumber())
+    }
+
+    fun changeDarkMode() {
+        _darkMode.value = !_darkMode.value!!
+        sharedPreferences.setDarkMode(_darkMode.value!!)
+    }
+
     fun isRegistered(): Boolean = sharedPreferences.isLoggedIn()
+    fun logOut() {
+        sharedPreferences.logOut()
+    }
 }

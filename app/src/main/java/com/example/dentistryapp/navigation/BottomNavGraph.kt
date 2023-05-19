@@ -3,7 +3,6 @@ package com.example.dentistryapp.navigation
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -12,7 +11,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -25,6 +23,7 @@ import com.example.dentistryapp.ui.doctors.DoctorsScreen
 import com.example.dentistryapp.ui.doctors.DoctorsViewModel
 import com.example.dentistryapp.ui.home.HomeScreen
 import com.example.dentistryapp.ui.profile.ProfileScreen
+import com.example.dentistryapp.ui.profile.ProfileViewModel
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -33,7 +32,8 @@ fun BottomNavGraph(
     bottomNavController: NavHostController = rememberNavController(),
     startDestination: String = BottomNavigationItem.HomeScreen.screenRoute,
     dentistryNavController: NavController,
-    doctorsViewModel: DoctorsViewModel
+    doctorsViewModel: DoctorsViewModel,
+    profileViewModel: ProfileViewModel
 ) {
     val items = listOf(
         BottomNavigationItem.HomeScreen,
@@ -99,6 +99,7 @@ fun BottomNavGraph(
                     }
                     composable(BottomNavigationItem.ProfileScreen.screenRoute) {
                         ProfileScreen(
+                            viewModel = profileViewModel,
                             navController = dentistryNavController
                         )
                     }

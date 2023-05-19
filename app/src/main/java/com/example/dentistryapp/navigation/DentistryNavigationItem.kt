@@ -9,5 +9,6 @@ sealed class DentistryNavigationItem(var screenRoute: String) {
     object SelectDoctorScreen : DentistryNavigationItem("select_doctor")
     object SelectDateScreen : DentistryNavigationItem("select_date")
     object SelectTimeScreen : DentistryNavigationItem("select_time")
+    object DoctorInfoScreen : DentistryNavigationItem("doctor_info")
     object DoctorReviewsScreen : DentistryNavigationItem("doctor_reviews")
 }

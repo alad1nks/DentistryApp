@@ -10,12 +10,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.dentistryapp.ui.*
+import com.example.dentistryapp.ui.doctors.DoctorInfoScreen
 import com.example.dentistryapp.ui.doctors.DoctorReviewsScreen
 import com.example.dentistryapp.ui.doctors.DoctorsViewModel
 import com.example.dentistryapp.ui.services.SelectDateScreen
 import com.example.dentistryapp.ui.services.SelectTimeScreen
 import com.example.dentistryapp.ui.greeting.GreetingScreen
 import com.example.dentistryapp.ui.login.LoginScreen
+import com.example.dentistryapp.ui.profile.ProfileViewModel
 import com.example.dentistryapp.ui.registration.RegistrationScreen
 import com.example.dentistryapp.ui.services.SelectDoctorScreen
 import com.example.dentistryapp.ui.services.ServicesScreen
@@ -28,6 +30,7 @@ fun DentistryNavGraph(
     modifier: Modifier = Modifier,
     dentistryNavController: NavHostController = rememberNavController(),
     startDestination: String = DentistryNavigationItem.BottomNavigationScreen.screenRoute,
+    profileViewModel: ProfileViewModel,
     servicesViewModel: ServicesViewModel = hiltViewModel(),
     doctorsViewModel: DoctorsViewModel = hiltViewModel()
 ) {
@@ -56,7 +59,8 @@ fun DentistryNavGraph(
                 composable(DentistryNavigationItem.BottomNavigationScreen.screenRoute) {
                     BottomNavGraph(
                         dentistryNavController = dentistryNavController,
-                        doctorsViewModel = doctorsViewModel
+                        doctorsViewModel = doctorsViewModel,
+                        profileViewModel = profileViewModel
                     )
                 }
                 composable(DentistryNavigationItem.ServicesScreen.screenRoute) {
@@ -81,6 +85,12 @@ fun DentistryNavGraph(
                     SelectTimeScreen(
                         navController = dentistryNavController,
                         viewModel = servicesViewModel
+                    )
+                }
+                composable(DentistryNavigationItem.DoctorInfoScreen.screenRoute) {
+                    DoctorInfoScreen(
+                        navController = dentistryNavController,
+                        viewModel = doctorsViewModel
                     )
                 }
                 composable(DentistryNavigationItem.DoctorReviewsScreen.screenRoute) {

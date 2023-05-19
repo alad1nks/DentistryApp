@@ -84,8 +84,9 @@ private fun DoctorsItem(
         modifier = Modifier
             .fillMaxWidth(),
         onClick = {
-            viewModel.selectDoctor(item.id)
-            navController.navigate(DentistryNavigationItem.DoctorReviewsScreen.screenRoute)
+            viewModel.selectDoctorId(item.id)
+            viewModel.selectDoctorUid(item.uid)
+            navController.navigate(DentistryNavigationItem.DoctorInfoScreen.screenRoute)
         }
     ) {
         Text(

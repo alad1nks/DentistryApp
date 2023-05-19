@@ -19,6 +19,8 @@ import com.example.dentistryapp.domain.doctors.usecases.CreateReviewUseCase
 import com.example.dentistryapp.domain.doctors.usecases.CreateReviewUseCaseImpl
 import com.example.dentistryapp.domain.doctors.usecases.GetReviewsUseCase
 import com.example.dentistryapp.domain.doctors.usecases.GetReviewsUseCaseImpl
+import com.example.dentistryapp.domain.doctors.usecases.GetSelectedDoctorUseCase
+import com.example.dentistryapp.domain.doctors.usecases.GetSelectedDoctorUseCaseImpl
 import com.example.dentistryapp.domain.login.repository.LoginRepository
 import com.example.dentistryapp.domain.login.usecases.LoginUseCase
 import com.example.dentistryapp.domain.login.usecases.LoginUseCaseImpl
@@ -98,4 +100,8 @@ abstract class AppModuleBinds {
     @Singleton
     @Binds
     abstract fun bindCreateReviewUseCase(useCase: CreateReviewUseCaseImpl): CreateReviewUseCase
+
+    @Singleton
+    @Binds
+    abstract fun bindGetSelectedDoctorUseCase(useCase: GetSelectedDoctorUseCaseImpl): GetSelectedDoctorUseCase
 }

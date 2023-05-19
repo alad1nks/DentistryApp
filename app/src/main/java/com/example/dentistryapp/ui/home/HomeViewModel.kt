@@ -20,7 +20,7 @@ class HomeViewModel @Inject constructor(
             HomeItemUi("Рекомендовать друзьям", true) {
 
             },
-            HomeItemUi("Отзывы", false) {
+            HomeItemUi("Отзывы", true) {
 
             }
         )

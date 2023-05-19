@@ -11,9 +11,12 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -29,6 +32,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.OffsetMapping
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -48,7 +52,9 @@ fun RegistrationScreen(
     var surname by rememberSaveable { mutableStateOf("") }
     val surnameMaxLength = 30
     var password by rememberSaveable { mutableStateOf("") }
+    var passwordVisible by rememberSaveable { mutableStateOf(false) }
     var repeatPassword by rememberSaveable { mutableStateOf("") }
+    var repeatPasswordVisible by rememberSaveable { mutableStateOf(false) }
     val phoneNumberError by viewModel.phoneNumberError.observeAsState()
     val nameError by viewModel.nameError.observeAsState()
     val surnameError by viewModel.surnameError.observeAsState()
@@ -172,10 +178,16 @@ fun RegistrationScreen(
                     textAlign = TextAlign.Start,
                 )
             },
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             isError = passwordError!!,
             trailingIcon = {
-                if (passwordError!!) {
-                    Icon(Icons.Filled.Error,"error", tint = MaterialTheme.colorScheme.error)
+                val image = if (passwordVisible)
+                    Icons.Filled.Visibility
+                else Icons.Filled.VisibilityOff
+                val description = if (passwordVisible) "Hide password" else "Show password"
+                IconButton(onClick = {passwordVisible = !passwordVisible}){
+                    Icon(imageVector  = image, description)
                 }
             }
         )
@@ -199,10 +211,16 @@ fun RegistrationScreen(
                     )
                 }
             },
+            visualTransformation = if (repeatPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             isError = repeatPasswordError!!,
             trailingIcon = {
-                if (repeatPasswordError!!) {
-                    Icon(Icons.Filled.Error,"error", tint = MaterialTheme.colorScheme.error)
+                val image = if (repeatPasswordVisible)
+                    Icons.Filled.Visibility
+                else Icons.Filled.VisibilityOff
+                val description = if (repeatPasswordVisible) "Hide password" else "Show password"
+                IconButton(onClick = {repeatPasswordVisible = !repeatPasswordVisible}){
+                    Icon(imageVector  = image, description)
                 }
             }
         )

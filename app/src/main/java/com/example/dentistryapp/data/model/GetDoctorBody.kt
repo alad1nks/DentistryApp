@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class DoctorBody(
-    @SerialName("name")
-    val name: String
+data class GetDoctorBody(
+    @SerialName("uid")
+    val uid: Int
 )

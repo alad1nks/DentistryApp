@@ -5,11 +5,13 @@ import com.example.dentistryapp.data.model.AppointmentsResponse
 import com.example.dentistryapp.data.model.ClinicsResponse
 import com.example.dentistryapp.data.model.CreateAppointmentBody
 import com.example.dentistryapp.data.model.CreateReviewBody
-import com.example.dentistryapp.data.model.DoctorBody
+import com.example.dentistryapp.data.model.SearchDoctorBody
 import com.example.dentistryapp.data.model.GetDoctorsResponse
 import com.example.dentistryapp.data.model.ErrorResponse
+import com.example.dentistryapp.data.model.GetDoctorBody
 import com.example.dentistryapp.data.model.GetReviewsBody
 import com.example.dentistryapp.data.model.GetReviewsResponse
+import com.example.dentistryapp.data.model.GetSelectedDoctorResponse
 import com.example.dentistryapp.data.model.LoginBody
 import com.example.dentistryapp.data.model.LoginResponse
 import com.example.dentistryapp.data.model.ProfileInfoResponse
@@ -42,8 +44,13 @@ interface DentistryApi {
 
     @POST("/doctor/find/namesubstr")
     suspend fun searchDoctors(
-        @Body doctorBody: DoctorBody
+        @Body searchDoctorBody: SearchDoctorBody
     ): GetDoctorsResponse
+
+    @POST("/doctor/get")
+    suspend fun getDoctor(
+        @Body doctorBody: GetDoctorBody
+    ): GetSelectedDoctorResponse
 
     @POST("/review/find/doctor")
     suspend fun getReviews(

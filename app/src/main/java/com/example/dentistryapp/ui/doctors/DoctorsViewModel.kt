@@ -1,5 +1,6 @@
 package com.example.dentistryapp.ui.doctors
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,9 +9,11 @@ import com.example.dentistryapp.domain.doctors.usecases.CreateReviewUseCase
 import com.example.dentistryapp.domain.doctors.usecases.DoctorsUiFactory
 import com.example.dentistryapp.domain.doctors.usecases.GetDoctorsUseCaseImpl
 import com.example.dentistryapp.domain.doctors.usecases.GetReviewsUseCase
+import com.example.dentistryapp.domain.doctors.usecases.GetSelectedDoctorUseCase
 import com.example.dentistryapp.domain.doctors.usecases.ReviewsUiFactory
 import com.example.dentistryapp.ktx.runCatchingNonCancellation
 import com.example.dentistryapp.ui.model.ReviewUi
+import com.example.dentistryapp.ui.model.SelectedDoctorUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -29,6 +32,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DoctorsViewModel @Inject constructor(
     private val getSearchDoctorsUseCase: GetDoctorsUseCaseImpl,
+    private val getSelectedDoctorUseCase: GetSelectedDoctorUseCase,
     private val getReviewsUseCase: GetReviewsUseCase,
     private val createReviewUseCase: CreateReviewUseCase
 ) : ViewModel() {
@@ -38,8 +42,15 @@ class DoctorsViewModel @Inject constructor(
     val searchState: LiveData<DoctorsScreenState> get() = _searchState
     val searchQueryState: MutableSharedFlow<String> = MutableSharedFlow()
 
-    private val _selectedDoctor: MutableLiveData<Int> = MutableLiveData()
-    val selectedDoctor: LiveData<Int> get() = _selectedDoctor
+    private val _selectedDoctorId: MutableLiveData<Int> = MutableLiveData()
+    val selectedDoctorId: LiveData<Int> get() = _selectedDoctorId
+
+    private val _selectedDoctorUid: MutableLiveData<Int> = MutableLiveData()
+    val selectedDoctorUid: LiveData<Int> get() = _selectedDoctorUid
+
+    private val _selectedDoctorInfo: MutableLiveData<SelectedDoctorUi> = MutableLiveData()
+    val selectedDoctorInfo: LiveData<SelectedDoctorUi> get() = _selectedDoctorInfo
+
 
     private val _reviews: MutableLiveData<List<ReviewUi>> = MutableLiveData()
     val reviews: LiveData<List<ReviewUi>> get() = _reviews
@@ -50,18 +61,29 @@ class DoctorsViewModel @Inject constructor(
 
     fun getReviews() {
         viewModelScope.launch(Dispatchers.IO) {
-            _reviews.postValue(ReviewsUiFactory.create(getReviewsUseCase.getReviews(selectedDoctor.value!!)))
+            _reviews.postValue(ReviewsUiFactory.create(getReviewsUseCase.getReviews(selectedDoctorId.value!!)))
         }
     }
 
-    fun selectDoctor(id: Int) {
-        _selectedDoctor.postValue(id)
+    fun selectDoctorId(id: Int) {
+        _selectedDoctorId.postValue(id)
+    }
+
+    fun selectDoctorUid(uid: Int) {
+        _selectedDoctorUid.postValue(uid)
     }
 
     fun createReview(score: Int, description: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            createReviewUseCase.createReview(selectedDoctor.value!!, score, description)
-            _reviews.postValue(ReviewsUiFactory.create(getReviewsUseCase.getReviews(selectedDoctor.value!!)))
+            createReviewUseCase.createReview(selectedDoctorId.value!!, score, description)
+            _reviews.postValue(ReviewsUiFactory.create(getReviewsUseCase.getReviews(selectedDoctorId.value!!)))
+        }
+    }
+
+    fun getSelectedDoctor() {
+        viewModelScope.launch(Dispatchers.IO) {
+            Log.d("sasasasas", "${selectedDoctorUid.value}")
+            _selectedDoctorInfo.postValue(getSelectedDoctorUseCase.getSelectedDoctor(selectedDoctorUid.value!!))
         }
     }
 
