@@ -1,10 +1,10 @@
-package com.example.dentistryapp.data.model
+package com.example.dentistryapp.data.api.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class GetDoctorResponse(
+data class GetSelectedDoctorInfoResponse(
     @SerialName("id")
     val id: Int,
 
@@ -18,5 +18,11 @@ data class GetDoctorResponse(
     val post: String,
 
     @SerialName("exp")
-    val exp: Int
+    val exp: Int,
+
+    @SerialName("photo")
+    val photo: String,
+
+//    @SerialName("description")
+//    val description: String
 )

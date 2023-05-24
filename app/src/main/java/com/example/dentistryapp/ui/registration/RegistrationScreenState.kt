@@ -1,13 +1,14 @@
 package com.example.dentistryapp.ui.registration
 
 sealed interface RegistrationScreenState {
-    class InputError(
-        val phoneNumberError: Boolean,
-        val nameError: Boolean,
-        val surnameError: Boolean,
-        val passwordError: Boolean,
-        val repeatPasswordError: Boolean
+    data class OnRegistration(
+        var phoneNumberError: Boolean,
+        var nameError: Boolean,
+        var surnameError: Boolean,
+        var passwordError: Boolean,
+        var repeatPasswordError: Boolean
     ) : RegistrationScreenState
     object Registered : RegistrationScreenState
     object ConnectionError : RegistrationScreenState
+    object UserAlreadyExistsError : RegistrationScreenState
 }

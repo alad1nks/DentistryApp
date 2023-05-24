@@ -39,7 +39,6 @@ fun DoctorInfoScreen(
     viewModel: DoctorsViewModel
 ) {
     val doctorInfo by viewModel.selectedDoctorInfo.observeAsState(SelectedDoctorUi("", "", "", "", ""))
-    viewModel.getSelectedDoctor()
 
     Scaffold(
         modifier = Modifier,

@@ -1,14 +1,16 @@
-package com.example.dentistryapp.data.model
+package com.example.dentistryapp.data.api.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RegistrationBody(
+data class ProfileInfoResponse(
+    @SerialName("id")
+    val id: Int,
+
     @SerialName("login")
     val login: String,
-    @SerialName("password")
-    val password: String,
+
     @SerialName("role")
     val role: Int
 )

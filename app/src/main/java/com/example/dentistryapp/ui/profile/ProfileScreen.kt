@@ -3,6 +3,7 @@ package com.example.dentistryapp.ui.profile
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -109,11 +110,13 @@ fun ProfileScreen(
                     fontSize = 20.sp
                 )
 
-                Text(
-                    text = "Ночная тема:",
-                    modifier = Modifier.padding(top = 16.dp)
-                )
-                Switch(checked = darkTheme!!, onCheckedChange = { viewModel.changeDarkMode() })
+                Row {
+                    Text(
+                        text = "Ночная тема:",
+                        modifier = Modifier.padding(top = 16.dp)
+                    )
+                    Switch(checked = darkTheme!!, onCheckedChange = { viewModel.changeDarkMode() })
+                }
 
                 FilledIconButton(
                     onClick = {

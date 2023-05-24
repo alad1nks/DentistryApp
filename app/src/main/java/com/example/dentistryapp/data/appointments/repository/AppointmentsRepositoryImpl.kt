@@ -1,8 +1,8 @@
 package com.example.dentistryapp.data.appointments.repository
 
 import com.example.dentistryapp.data.api.DentistryApi
-import com.example.dentistryapp.data.model.AppointmentsBody
-import com.example.dentistryapp.data.model.AppointmentsResponse
+import com.example.dentistryapp.data.api.model.AppointmentsBody
+import com.example.dentistryapp.data.api.model.AppointmentsResponse
 import com.example.dentistryapp.domain.appointments.repository.AppointmentsRepository
 import com.example.dentistryapp.domain.model.AppointmentDomain
 import com.example.dentistryapp.preferences.SharedPreferences
@@ -13,7 +13,11 @@ class AppointmentsRepositoryImpl @Inject constructor(
     private val preferences: SharedPreferences
 ) : AppointmentsRepository {
     override suspend fun getAppointments(): List<AppointmentDomain> {
-        return api.getAppointments(AppointmentsBody(preferences.getId())).toDomain()
+        return api.getAppointments(
+            AppointmentsBody(
+                preferences.getId()
+            )
+        ).toDomain()
     }
 
     private fun AppointmentsResponse.toDomain(): List<AppointmentDomain> {

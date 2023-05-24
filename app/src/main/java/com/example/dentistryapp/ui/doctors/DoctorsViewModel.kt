@@ -1,6 +1,5 @@
 package com.example.dentistryapp.ui.doctors
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -80,10 +79,9 @@ class DoctorsViewModel @Inject constructor(
         }
     }
 
-    fun getSelectedDoctor() {
+    fun getSelectedDoctor(uid: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            Log.d("sasasasas", "${selectedDoctorUid.value}")
-            _selectedDoctorInfo.postValue(getSelectedDoctorUseCase.getSelectedDoctor(selectedDoctorUid.value!!))
+            _selectedDoctorInfo.postValue(getSelectedDoctorUseCase.getSelectedDoctor(uid))
         }
     }
 

@@ -86,6 +86,7 @@ private fun DoctorsItem(
         onClick = {
             viewModel.selectDoctorId(item.id)
             viewModel.selectDoctorUid(item.uid)
+            viewModel.getSelectedDoctor(item.uid)
             navController.navigate(DentistryNavigationItem.DoctorInfoScreen.screenRoute)
         }
     ) {

@@ -1,10 +1,10 @@
 package com.example.dentistryapp.data.services.repository
 
 import com.example.dentistryapp.data.api.DentistryApi
-import com.example.dentistryapp.data.model.CreateAppointmentBody
-import com.example.dentistryapp.data.model.ServiceResponse
-import com.example.dentistryapp.data.model.TimeSlotResponse
-import com.example.dentistryapp.data.model.TimeSlotsBody
+import com.example.dentistryapp.data.api.model.CreateAppointmentBody
+import com.example.dentistryapp.data.api.model.ServiceResponse
+import com.example.dentistryapp.data.api.model.TimeSlotResponse
+import com.example.dentistryapp.data.api.model.TimeSlotsBody
 import com.example.dentistryapp.domain.model.ServiceDomain
 import com.example.dentistryapp.domain.model.TimeSlotDomain
 import com.example.dentistryapp.domain.services.repository.ServicesRepository
@@ -34,7 +34,11 @@ class ServicesRepositoryImpl @Inject constructor(
     }
 
     override suspend fun createAppointment(doctorId: Int, serviceId: Int, time: String) {
-        api.createAppointment(createAppointmentBody = CreateAppointmentBody(doctorId, serviceId, time), jwt = "jwt=${preferences.getJwt()}")
+        api.createAppointment(createAppointmentBody = CreateAppointmentBody(
+            doctorId,
+            serviceId,
+            time
+        ), jwt = "jwt=${preferences.getJwt()}")
     }
 
     private fun List<ServiceResponse>.toDomain(): List<ServiceDomain> {

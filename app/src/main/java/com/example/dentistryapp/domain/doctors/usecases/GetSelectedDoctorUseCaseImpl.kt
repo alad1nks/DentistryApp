@@ -1,6 +1,5 @@
 package com.example.dentistryapp.domain.doctors.usecases
 
-import com.example.dentistryapp.data.model.GetSelectedDoctorInfoResponse
 import com.example.dentistryapp.domain.doctors.repository.DoctorsRepository
 import com.example.dentistryapp.ui.model.SelectedDoctorUi
 import javax.inject.Inject
@@ -12,7 +11,7 @@ class GetSelectedDoctorUseCaseImpl @Inject constructor(
         return repository.getSelectedDoctor(id).info.toUi()
     }
 
-    private fun GetSelectedDoctorInfoResponse.toUi(): SelectedDoctorUi {
+    private fun com.example.dentistryapp.data.api.model.GetSelectedDoctorInfoResponse.toUi(): SelectedDoctorUi {
         val year = when (this.exp % 10) {
             1 -> "год"
             in 2..4 -> "года"

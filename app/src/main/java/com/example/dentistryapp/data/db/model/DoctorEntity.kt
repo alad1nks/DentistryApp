@@ -1,4 +1,4 @@
-package com.example.dentistryapp.data.model
+package com.example.dentistryapp.data.db.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

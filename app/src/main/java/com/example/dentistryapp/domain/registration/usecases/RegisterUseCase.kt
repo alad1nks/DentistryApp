@@ -15,7 +15,7 @@ class RegisterUseCase @Inject constructor(
                 RegistrationScreenState.ConnectionError
             }
         }
-        return RegistrationScreenState.InputError(
+        return RegistrationScreenState.OnRegistration(
             phoneNumber.length != 11,
             name.isEmpty(),
             surname.isEmpty(),

@@ -16,84 +16,72 @@ class RegistrationViewModel @Inject constructor(
     private val registerUseCase: RegisterUseCase,
     private val preferences: SharedPreferences
 ) : ViewModel() {
-    private val _phoneNumber: MutableLiveData<String> = MutableLiveData("")
-    private val _name: MutableLiveData<String> = MutableLiveData("")
-    private val _surname: MutableLiveData<String> = MutableLiveData("")
     private val _phoneNumberError: MutableLiveData<Boolean> = MutableLiveData(false)
     private val _nameError: MutableLiveData<Boolean> = MutableLiveData(false)
     private val _surnameError: MutableLiveData<Boolean> = MutableLiveData(false)
     private val _passwordError: MutableLiveData<Boolean> = MutableLiveData(false)
     private val _repeatPasswordError: MutableLiveData<Boolean> = MutableLiveData(false)
-    private val _registered = MutableLiveData(false)
     val phoneNumberError: LiveData<Boolean> get() = _phoneNumberError
     val nameError: LiveData<Boolean> get() = _nameError
     val surnameError: LiveData<Boolean> get() = _surnameError
     val passwordError: LiveData<Boolean> get() = _passwordError
     val repeatPasswordError: LiveData<Boolean> get() = _repeatPasswordError
-    val registered: LiveData<Boolean> get() = _registered
+
+
+    private val _registrationScreenState: MutableLiveData<RegistrationScreenState> = MutableLiveData(RegistrationScreenState.OnRegistration(
+        phoneNumberError = false,
+        nameError = false,
+        surnameError = false,
+        passwordError = false,
+        repeatPasswordError = false
+    ))
+    val registrationScreenState: LiveData<RegistrationScreenState> get() = _registrationScreenState
 
     fun register(phoneNumber: String, name: String, surname: String, password: String, repeatPassword: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            when (val state = registerUseCase.register(phoneNumber, name, surname, password, repeatPassword)) {
-                is RegistrationScreenState.InputError -> {
-                    _phoneNumberError.postValue(state.phoneNumberError)
-                    _nameError.postValue(state.nameError)
-                    _surnameError.postValue(state.surnameError)
-                    _passwordError.postValue(state.passwordError)
-                    _repeatPasswordError.postValue(state.repeatPasswordError)
-                }
-                RegistrationScreenState.Registered -> {
-                    _registered.postValue(true)
-                    preferences.setPhoneNumber(_phoneNumber.value!!)
-                    preferences.setName(_name.value!!)
-                    preferences.setSurname(_surname.value!!)
-                }
-                else -> {
-                    _registered.postValue(false)
-                }
+            val state = registerUseCase.register(phoneNumber, name, surname, password, repeatPassword)
+            if (state == RegistrationScreenState.Registered) {
+                preferences.setPhoneNumber(phoneNumber)
+                preferences.setName(name)
+                preferences.setSurname(surname)
+            } else if (state is RegistrationScreenState.OnRegistration) {
+                _phoneNumberError.postValue(state.phoneNumberError)
+                _nameError.postValue(state.nameError)
+                _surnameError.postValue(state.surnameError)
+                _passwordError.postValue(state.passwordError)
+                _repeatPasswordError.postValue(state.repeatPasswordError)
             }
+            _registrationScreenState.postValue(state)
         }
     }
 
     fun removePhoneNumberError() {
-        if (_phoneNumberError.value == true) {
-            _phoneNumberError.value = false
-        }
+        _phoneNumberError.postValue(false)
     }
 
     fun removeNameError() {
-        if (_nameError.value == true) {
-            _nameError.value = false
-        }
+        _nameError.postValue(false)
     }
 
     fun removeSurnameError() {
-        if (_surnameError.value == true) {
-            _surnameError.value = false
-        }
+        _surnameError.postValue(false)
     }
 
     fun removePasswordError() {
-        if (_passwordError.value == true) {
-            _passwordError.value = false
-        }
+        _passwordError.postValue(false)
     }
 
     fun removeRepeatPasswordError() {
-        if (_repeatPasswordError.value == true) {
-            _repeatPasswordError.value = false
-        }
+        _repeatPasswordError.postValue(false)
     }
-    fun setPhoneNumber(phoneNumber: String) {
-        _phoneNumber.value = phoneNumber
-    }
-    fun setName(name: String) {
-        _name.value = name
-    }
-    fun setSurname(surname: String) {
-        _surname.value = surname
-    }
+
     fun registered() {
-        _registered.value = false
+        _registrationScreenState.value = RegistrationScreenState.OnRegistration(
+            phoneNumberError = false,
+            nameError = false,
+            surnameError = false,
+            passwordError = false,
+            repeatPasswordError = false
+        )
     }
 }

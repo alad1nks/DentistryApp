@@ -1,5 +1,6 @@
 package com.example.dentistryapp.ui.registration
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,11 +14,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.outlined.AppRegistration
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -36,11 +41,14 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.dentistryapp.navigation.DentistryNavigationItem
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegistrationScreen(
     viewModel: RegistrationViewModel = hiltViewModel(),
@@ -60,191 +68,216 @@ fun RegistrationScreen(
     val surnameError by viewModel.surnameError.observeAsState()
     val passwordError by viewModel.passwordError.observeAsState()
     val repeatPasswordError by viewModel.repeatPasswordError.observeAsState()
-    val registered by viewModel.registered.observeAsState()
-    if (registered == true) {
+    val screenState by viewModel.registrationScreenState.observeAsState()
+    if (screenState == RegistrationScreenState.Registered) {
         viewModel.registered()
         navController.navigate(DentistryNavigationItem.LoginScreen.screenRoute) {
             popUpTo(0)
         }
-    }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Spacer(modifier = Modifier.padding(8.dp))
-        PhoneField(
-            phone = phoneNumber,
-            mask = "+0 (000) 000 00 00",
-            maskNumber = '0',
-            onPhoneChanged = {
-                phoneNumber = it
-                viewModel.removePhoneNumberError()
-                viewModel.setPhoneNumber(it)
-            },
-            supportingText = {
-                Text(
-                    text = "Введите номер телефона",
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Start,
+    } else if (screenState is RegistrationScreenState.OnRegistration) {
+        Scaffold(
+            topBar = {
+                CenterAlignedTopAppBar(
+                    title = {
+                        Text(
+                            "Регистрация",
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    },
+                    actions = {
+                        Icon(
+                            imageVector = Icons.Outlined.AppRegistration,
+                            contentDescription = "Localized description"
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = { navController.popBackStack() }) {
+                            Icon(
+                                imageVector = Icons.Outlined.Close,
+                                contentDescription = "Localized description"
+                            )
+                        }
+                    }
                 )
-            },
-            isError = phoneNumberError!!,
-            trailingIcon = {
-                if (phoneNumberError!!) {
-                    Icon(Icons.Filled.Error, "error", tint = MaterialTheme.colorScheme.error)
-                }
             }
-        )
-        Spacer(modifier = Modifier.padding(8.dp))
-        TextField(
-            value = name,
-            onValueChange = {
-                if (it.length <= 30) name = it
-                viewModel.removeNameError()
-                viewModel.setName(it)
-            },
-            modifier = Modifier.fillMaxWidth(),
-            label = {
-                Text(text = "Имя")
-            },
-            supportingText = {
-                Text(
-                    text = "Введите имя",
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Start,
+        ) { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(innerPadding),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(modifier = Modifier.padding(8.dp))
+                PhoneField(
+                    phone = phoneNumber,
+                    mask = "+0 (000) 000 00 00",
+                    maskNumber = '0',
+                    onPhoneChanged = {
+                        phoneNumber = it
+                        viewModel.removePhoneNumberError()
+                    },
+                    supportingText = {
+                        Text(
+                            text = "Введите номер телефона",
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Start,
+                        )
+                    },
+                    isError = phoneNumberError!!,
+                    trailingIcon = {
+                        if (phoneNumberError!!) {
+                            Icon(Icons.Filled.Error, "error", tint = MaterialTheme.colorScheme.error)
+                        }
+                    }
                 )
-                Text(
-                    text = "${name.length} / $nameMaxLength",
+                Spacer(modifier = Modifier.padding(8.dp))
+                TextField(
+                    value = name,
+                    onValueChange = {
+                        if (it.length <= 30) name = it
+                        viewModel.removeNameError()
+                    },
                     modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.End,
+                    label = {
+                        Text(text = "Имя")
+                    },
+                    supportingText = {
+                        Text(
+                            text = "Введите имя",
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Start,
+                        )
+                        Text(
+                            text = "${name.length} / $nameMaxLength",
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.End,
+                        )
+                    },
+                    isError = nameError!!,
+                    trailingIcon = {
+                        if (nameError!!) {
+                            Icon(Icons.Filled.Error,"error", tint = MaterialTheme.colorScheme.error)
+                        }
+                    }
                 )
-            },
-            isError = nameError!!,
-            trailingIcon = {
-                if (nameError!!) {
-                    Icon(Icons.Filled.Error,"error", tint = MaterialTheme.colorScheme.error)
-                }
-            }
-        )
-        Spacer(modifier = Modifier.padding(8.dp))
-        TextField(
-            value = surname,
-            onValueChange = {
-                if (it.length <= 30) surname = it
-                viewModel.removeSurnameError()
-                viewModel.setSurname(it)
-            },
-            modifier = Modifier.fillMaxWidth(),
-            label = {
-                Text(text = "Фамилия")
-            },
-            supportingText = {
-                Text(
-                    text = "Введите фамилию",
+                Spacer(modifier = Modifier.padding(8.dp))
+                TextField(
+                    value = surname,
+                    onValueChange = {
+                        if (it.length <= 30) surname = it
+                        viewModel.removeSurnameError()
+                    },
                     modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Start,
+                    label = {
+                        Text(text = "Фамилия")
+                    },
+                    supportingText = {
+                        Text(
+                            text = "Введите фамилию",
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Start,
+                        )
+                        Text(
+                            text = "${surname.length} / $surnameMaxLength",
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.End,
+                        )
+                    },
+                    isError = surnameError!!,
+                    trailingIcon = {
+                        if (surnameError!!) {
+                            Icon(Icons.Filled.Error,"error", tint = MaterialTheme.colorScheme.error)
+                        }
+                    }
                 )
-                Text(
-                    text = "${surname.length} / $surnameMaxLength",
+                Spacer(modifier = Modifier.padding(8.dp))
+                TextField(
+                    value = password,
+                    onValueChange = {
+                        password = it
+                        viewModel.removePasswordError()
+                    },
                     modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.End,
+                    label = {
+                        Text(text = "Пароль")
+                    },
+                    supportingText = {
+                        Text(
+                            text = "Введите пароль",
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Start,
+                        )
+                    },
+                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    isError = passwordError!!,
+                    trailingIcon = {
+                        val image = if (passwordVisible)
+                            Icons.Filled.Visibility
+                        else Icons.Filled.VisibilityOff
+                        val description = if (passwordVisible) "Hide password" else "Show password"
+                        IconButton(onClick = {passwordVisible = !passwordVisible}) {
+                            Icon(imageVector  = image, description)
+                        }
+                    }
                 )
-            },
-            isError = surnameError!!,
-            trailingIcon = {
-                if (surnameError!!) {
-                    Icon(Icons.Filled.Error,"error", tint = MaterialTheme.colorScheme.error)
-                }
-            }
-        )
-        Spacer(modifier = Modifier.padding(8.dp))
-        TextField(
-            value = password,
-            onValueChange = {
-                password = it
-                viewModel.removePasswordError()
-            },
-            modifier = Modifier.fillMaxWidth(),
-            label = {
-                Text(text = "Пароль")
-            },
-            supportingText = {
-                Text(
-                    text = "Введите пароль",
+                Spacer(modifier = Modifier.padding(8.dp))
+                TextField(
+                    value = repeatPassword,
+                    onValueChange = {
+                        repeatPassword = it
+                        viewModel.removeRepeatPasswordError()
+                    },
                     modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Start,
+                    label = {
+                        Text(text = "Пароль")
+                    },
+                    supportingText = {
+                        if (repeatPasswordError!!) {
+                            Text(
+                                text = "Пароли должны совпадать",
+                                modifier = Modifier.fillMaxWidth(),
+                                textAlign = TextAlign.Start,
+                            )
+                        }
+                    },
+                    visualTransformation = if (repeatPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    isError = repeatPasswordError!!,
+                    trailingIcon = {
+                        val image = if (repeatPasswordVisible)
+                            Icons.Filled.Visibility
+                        else Icons.Filled.VisibilityOff
+                        val description = if (repeatPasswordVisible) "Hide password" else "Show password"
+                        IconButton(onClick = {repeatPasswordVisible = !repeatPasswordVisible}){
+                            Icon(imageVector  = image, description)
+                        }
+                    }
                 )
-            },
-            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            isError = passwordError!!,
-            trailingIcon = {
-                val image = if (passwordVisible)
-                    Icons.Filled.Visibility
-                else Icons.Filled.VisibilityOff
-                val description = if (passwordVisible) "Hide password" else "Show password"
-                IconButton(onClick = {passwordVisible = !passwordVisible}){
-                    Icon(imageVector  = image, description)
-                }
-            }
-        )
-        Spacer(modifier = Modifier.padding(8.dp))
-        TextField(
-            value = repeatPassword,
-            onValueChange = {
-                repeatPassword = it
-                viewModel.removeRepeatPasswordError()
-            },
-            modifier = Modifier.fillMaxWidth(),
-            label = {
-                Text(text = "Пароль")
-            },
-            supportingText = {
-                if (repeatPasswordError!!) {
-                    Text(
-                        text = "Пароли должны совпадать",
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Start,
-                    )
-                }
-            },
-            visualTransformation = if (repeatPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            isError = repeatPasswordError!!,
-            trailingIcon = {
-                val image = if (repeatPasswordVisible)
-                    Icons.Filled.Visibility
-                else Icons.Filled.VisibilityOff
-                val description = if (repeatPasswordVisible) "Hide password" else "Show password"
-                IconButton(onClick = {repeatPasswordVisible = !repeatPasswordVisible}){
-                    Icon(imageVector  = image, description)
-                }
-            }
-        )
-        FilledIconButton(
-            onClick = {
-                viewModel.register(phoneNumber, name, surname, password, repeatPassword)
-                      },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(24.dp),
-            content = {
-                Text(
-                    text = "Зарегистрироваться",
+                FilledIconButton(
+                    onClick = {
+                        viewModel.register(phoneNumber, name, surname, password, repeatPassword)
+                    },
                     modifier = Modifier
-                        .wrapContentSize(Alignment.Center)
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    content = {
+                        Text(
+                            text = "Зарегистрироваться",
+                            modifier = Modifier
+                                .wrapContentSize(Alignment.Center)
+                        )
+                    }
                 )
             }
-        )
+        }
     }
 }
 
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PhoneField(
     phone: String,
